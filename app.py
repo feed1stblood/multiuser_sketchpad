@@ -42,5 +42,5 @@ def on_chat_message(message):
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=6676, debug=True, logger=True, engineio_logger=True, binary=True)
+    socketio.run(app, host='0.0.0.0', port=6676, debug=True)
 
