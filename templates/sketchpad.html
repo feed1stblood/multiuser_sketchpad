@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="/static/sketchpad.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.3.js"></script>
+    <script>
+        var sketchpad;
+        $(document).ready(function() {
+            ele = '#sketchpad'
+            sketchpad = new Sketchpad({
+                element: ele,
+                width: $(ele).width(),
+                height: $(ele).height()
+            });
+            $('#color-picker').change(color);
+            $('#size-picker').change(size);
+            $('#size-picker').val(1);
+        });
+
+        function size(event) {
+            sketchpad.penSize = $(event.target).val();
+        }
+
+        function color(event) {
+            sketchpad.color = $(event.target).val();
+        }
+    </script>
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+
+        .drawingArea {
+            width: 100%;
+            height: 81%;
+        }
+
+        #sketchpad {
+            background: #FFF;
+            border-radius: 2px;
+            width: 100%;
+            -webkit-box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.75);
+            -moz-box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.75);
+            box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.75);
+            max-height: 100%;
+            height: inhereit;
+        }
+
+/*
+        #sketchpad:after {
+            display: block;
+            padding-bottom: 56.25%;
+        }
+*/
+
+        #size-picker {
+            -webkit-appearance: slider-vertical;
+            width: inherit;
+            height: inherit;
+        }
+
+        .sizeContainer {
+            float: left;
+            display: inline-block;
+            width: 20px;
+            margin: 10px;
+            height: 90%;
+            padding-top: 20px;
+        }
+
+        .canvasContainer {
+            width: 88%;
+            display: inline-block;
+            max-height: 100%;
+        }
+        
+        .palletContainer {
+            width: 5%;
+            display: inline-block;
+            height: 100%;
+        }
+        
+        .pallet {
+            width: 99%;
+            height: 7%;
+        }
+        
+        .chatContainer {
+            height: 16%;
+            position: absolute;
+            bottom: 0px;
+            width: 100%
+        }
+        
+        #chatHistory {
+            overflow-y: scroll;
+            height: 80%;
+            margin: 1px;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function(){
+
+            var socket = io.connect("/draw");
+
+            socket.on('connect', function() {
+                console.log("connected");
+            });
+
+            socket.on("chat", function(data) {
+                $("#chatHistory")[0].innerText += data["message"] + "\r\n";
+            })
+
+            $("#textMessage").on("keyup", function(event){
+                if (event.keyCode == 13){
+                    socket.emit("chat", {message: event.currentTarget.value});
+                }
+            })
+
+
+        });
+
+
+    </script>
+</head>
+
+<body>
+    <div class="drawingArea">
+        <div class="sizeContainer">
+            <input id="size-picker" type="range" min="1" max="100" />
+        </div>
+        <div class="canvasContainer">
+            <canvas id="sketchpad">
+            </canvas>
+        </div>
+        <div class="palletContainer">
+            <button class="pallet btn" style="background-color: red;" onclick="sketchpad.color='red'">
+            </button>
+
+            <button class="pallet btn" style="background-color: yellow;" onclick="sketchpad.color='yellow'">
+            </button>
+
+            <button class="pallet btn" style="background-color: green;" onclick="sketchpad.color='green'">
+            </button>
+
+            <button class="pallet btn" style="background-color: blue;" onclick="sketchpad.color='blue'">
+            </button>
+
+            <button class="pallet btn" style="background-color: orange;" onclick="sketchpad.color='orange'">
+            </button>
+
+            <button class="pallet btn" style="background-color: white;" onclick="sketchpad.color='white'">
+            </button>
+
+            <button class="pallet btn" style="background-color: black;" onclick="sketchpad.color='black'">
+            </button>
+
+            <button class="pallet btn" style="background-color: grey;" onclick="sketchpad.color='grey'">
+            </button>
+
+            <button class="pallet btn" style="background-color: cyan;" onclick="sketchpad.color='cyan'">
+            </button>
+
+            <button class="pallet btn" style="background-color: pink;" onclick="sketchpad.color='pink'">
+            </button>
+
+            <button class="pallet btn" style="background-color: purple;" onclick="sketchpad.color='purple'">
+            </button>
+
+            <button class="pallet btn" style="background-color: brown;" onclick="sketchpad.color='brown'">
+            </button>
+
+            <input id="color-picker" class="pallet btn" type="color" orient="vertical" />
+        </div>
+
+    </div>
+    <div class="chatContainer">
+        <p id="chatHistory">Sample Text
+            <br> Sample Text
+            <br>
+        </p>
+        <input id="textMessage" style="width: 99%" />
+    </div>
+</body>
+
+</html>
