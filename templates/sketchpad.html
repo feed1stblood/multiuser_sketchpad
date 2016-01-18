@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title></title>
     <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
     <script src="/static/sketchpad.js"></script>
@@ -107,6 +107,16 @@
     </style>
 
     <script>
+
+        function JSON_stringify(s, emit_unicode)
+        {
+           var json = JSON.stringify(s);
+           return emit_unicode ? json : json.replace(/[\u007f-\uffff]/g,
+              function(c) {
+                return '\\u'+('0000'+c.charCodeAt(0).toString(16)).slice(-4);
+              }
+           );
+        }
         $(document).ready(function(){
 
             var socket = io.connect("/draw");
@@ -121,7 +131,7 @@
 
             $("#textMessage").on("keyup", function(event){
                 if (event.keyCode == 13){
-                    socket.emit("chat", {message: event.currentTarget.value});
+                    socket.emit("chat", JSON_stringify({message: event.currentTarget.value}));
                 }
             })
 

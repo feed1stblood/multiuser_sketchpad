@@ -2,6 +2,7 @@
 
 from flask import Flask, request, render_template
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, rooms
+import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'feed'
@@ -34,10 +35,12 @@ def on_disconnect():
 
 @socketio.on("chat", namespace="/draw")
 def on_chat_message(message):
+    message = json.loads(message)
     sid = request.sid[:5]
     for room in all_rooms:
         emit("chat", {"message": sid + ": " + message["message"]}, broadcast=True, room=room)
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=6676, debug=True)
+    socketio.run(app, host='0.0.0.0', port=6676, debug=True, logger=True, engineio_logger=True, binary=True)
+
