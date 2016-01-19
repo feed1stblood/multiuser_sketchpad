@@ -8,6 +8,7 @@
     <script src="/static/sketchpad.js"></script>
     <script src="https://cdn.socket.io/socket.io-1.4.3.js"></script>
     <script>
+        var desired = {width: 600.0, height: 300.0}
         var sketchpad;
         $(document).ready(function() {
             ele = '#sketchpad'
@@ -107,7 +108,6 @@
     </style>
 
     <script>
-
         function JSON_stringify(s, emit_unicode)
         {
            var json = JSON.stringify(s);
@@ -119,7 +119,7 @@
         }
         $(document).ready(function(){
 
-            var socket = io.connect("/draw");
+            socket = io.connect("/draw");
 
             socket.on('connect', function() {
                 console.log("connected");
@@ -137,10 +137,39 @@
                 }
             })
 
+            $("#sketchpad").on("drawing", function(event, data){
+                var ratio = $("#sketchpad").width() / desired.width;
+                data.start.x /= ratio;
+                data.end.x /= ratio;
+                data.start.y /= ratio;
+                data.end.y /= ratio;
+                if (data.size != null){
+                    data.size /= ratio;
+                }
+                socket.emit("drawing", data);
+            });
+
+            $("#sketchpad").on("drew", function(){
+                socket.emit("drew");
+            });
+
+            socket.on("drawing", function(data){
+                var ratio = $("#sketchpad").width() / desired.width;
+                data.start.x *= ratio;
+                data.end.x *= ratio;
+                data.start.y *= ratio;
+                data.end.y *= ratio;
+                if (data.size != null){
+                    data.size *= ratio;
+                }
+                sketchpad.drawing(data.start, data.end, data.color, data.size);
+            });
+
+            socket.on("drew", function(){
+                sketchpad.draw_end();
+            });
 
         });
-
-
     </script>
 </head>
 

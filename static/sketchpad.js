@@ -116,32 +116,19 @@ Sketchpad.prototype._stroke = function(start, end, color, size, compositeOperati
 //
 
 Sketchpad.prototype._mouseDown = function(event) {
-  this._lastPosition = this._cursorPosition(event);
-  this._currentStroke.color = this.color;
-  this._currentStroke.size = this.penSize;
-  this._currentStroke.lines = [];
-  this._sketching = true;
+  this._draw_start(this._cursorPosition(event));
   this.canvas.addEventListener('mousemove', this._mouseMove);
 };
 
 Sketchpad.prototype._mouseUp = function(event) {
-  if (this._sketching) {
-    this.strokes.push($.extend(true, {}, this._currentStroke));
-    this._sketching = false;
-  }
+  this._draw_end();
   this.canvas.removeEventListener('mousemove', this._mouseMove);
 };
 
 Sketchpad.prototype._mouseMove = function(event) {
   var currentPosition = this._cursorPosition(event);
 
-  this._draw(this._lastPosition, currentPosition, this.color, this.penSize);
-  this._currentStroke.lines.push({
-    start: $.extend(true, {}, this._lastPosition),
-    end: $.extend(true, {}, currentPosition),
-  });
-
-  this._lastPosition = currentPosition;
+  this._drawing(currentPosition);
 };
 
 Sketchpad.prototype._touchStart = function(event) {
@@ -149,38 +136,25 @@ Sketchpad.prototype._touchStart = function(event) {
   if (this._sketching) {
     return;
   }
-  this._lastPosition = this._cursorPosition(event.changedTouches[0]);
-  this._currentStroke.color = this.color;
-  this._currentStroke.size = this.penSize;
-  this._currentStroke.lines = [];
-  this._sketching = true;
+  this._draw_start(this._cursorPosition(event.changedTouches[0]))
   this.canvas.addEventListener('touchmove', this._touchMove, false);
 };
 
 Sketchpad.prototype._touchEnd = function(event) {
   event.preventDefault();
-  if (this._sketching) {
-    this.strokes.push($.extend(true, {}, this._currentStroke));
-    this._sketching = false;
-  }
+  this._draw_end();
   this.canvas.removeEventListener('touchmove', this._touchMove);
 };
 
 Sketchpad.prototype._touchCancel = function(event) {
   event.preventDefault();
-  if (this._sketching) {
-    this.strokes.push($.extend(true, {}, this._currentStroke));
-    this._sketching = false;
-  }
+  this._draw_end();
   this.canvas.removeEventListener('touchmove', this._touchMove);
 };
 
 Sketchpad.prototype._touchLeave = function(event) {
   event.preventDefault();
-  if (this._sketching) {
-    this.strokes.push($.extend(true, {}, this._currentStroke));
-    this._sketching = false;
-  }
+  this._draw_end();
   this.canvas.removeEventListener('touchmove', this._touchMove);
 };
 
@@ -188,13 +162,59 @@ Sketchpad.prototype._touchMove = function(event) {
   event.preventDefault();
   var currentPosition = this._cursorPosition(event.changedTouches[0]);
 
-  this._draw(this._lastPosition, currentPosition, this.color, this.penSize);
-  this._currentStroke.lines.push({
+  this._drawing(currentPosition);
+};
+
+Sketchpad.prototype._draw_start = function(currentPosition) {
+  this._lastPosition = currentPosition;
+  this._currentStroke.color = this.color;
+  this._currentStroke.size = this.penSize;
+  this._currentStroke.lines = [];
+  this._sketching = true;
+}
+
+Sketchpad.prototype._drawing = function(currentPosition) {
+  this.drawing(this._lastPosition, currentPosition, this.color, this.penSize)
+
+
+  data = {
     start: $.extend(true, {}, this._lastPosition),
     end: $.extend(true, {}, currentPosition),
-  });
+  }
+
+  if (this._currentStroke.lines.length == 1){
+    data.color = this.color;
+    data.size = this.penSize;
+  }
 
   this._lastPosition = currentPosition;
+
+  this.element.trigger("drawing", data);
+};
+
+Sketchpad.prototype.drawing = function(start, end, color, size) {
+  this._currentStroke.color = color || this._currentStroke.color;
+  this._currentStroke.size = size || this._currentStroke.size;
+
+  this._draw(start, end, this._currentStroke.color, this._currentStroke.size);
+  this._currentStroke.lines.push({
+    start: $.extend(true, {}, start),
+    end: $.extend(true, {}, end),
+  });
+
+};
+
+Sketchpad.prototype._draw_end = function() {
+  if (this._sketching) {
+    this.draw_end();
+  }
+  this.element.trigger("drew");
+};
+
+Sketchpad.prototype.draw_end = function() {
+  this.strokes.push($.extend(true, {}, this._currentStroke));
+  this._currentStroke.lines = [];
+  this._sketching = false;
 };
 
 //
