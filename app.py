@@ -41,6 +41,18 @@ def on_chat_message(message):
         emit("chat", {"message": sid + ": " + message["message"]}, room=room)
 
 
+@socketio.on("drawing", namespace="/draw")
+def on_draw_message(message):
+    for room in all_rooms:
+        emit("drawing", message, room=room)
+
+
+@socketio.on("drew", namespace="/draw")
+def on_drew_message():
+    for room in all_rooms:
+        emit("drew", room=room)
+
+
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=6676, debug=True)
 
