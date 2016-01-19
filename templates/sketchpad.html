@@ -127,11 +127,13 @@
 
             socket.on("chat", function(data) {
                 $("#chatHistory")[0].innerText += data["message"] + "\r\n";
+                $("#chatHistory")[0].scrollTop = $("#chatHistory")[0].scrollHeight;
             })
 
-            $("#textMessage").on("keyup", function(event){
-                if (event.keyCode == 13){
+            $("#textMessage").on("keydown", function(event){
+                if (event.keyCode == 13 && event.currentTarget.value != ""){
                     socket.emit("chat", JSON_stringify({message: event.currentTarget.value}));
+                    event.currentTarget.value = '';
                 }
             })
 

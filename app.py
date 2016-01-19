@@ -38,7 +38,7 @@ def on_chat_message(message):
     message = json.loads(message)
     sid = request.sid[:5]
     for room in all_rooms:
-        emit("chat", {"message": sid + ": " + message["message"]}, broadcast=True, room=room)
+        emit("chat", {"message": sid + ": " + message["message"]}, room=room)
 
 
 if __name__ == '__main__':
