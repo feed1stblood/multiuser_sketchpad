@@ -139,12 +139,13 @@
 
             $("#sketchpad").on("drawing", function(event, data){
                 var ratio = $("#sketchpad").width() / desired.width;
+                var s_ratio = sketchpad._width / desired.width;
                 data.start.x /= ratio;
                 data.end.x /= ratio;
                 data.start.y /= ratio;
                 data.end.y /= ratio;
                 if (data.size != null){
-                    data.size /= ratio;
+                    data.size /= s_ratio;
                 }
                 socket.emit("drawing", data);
             });
@@ -155,12 +156,13 @@
 
             socket.on("drawing", function(data){
                 var ratio = $("#sketchpad").width() / desired.width;
+                var s_ratio = sketchpad._width / desired.width;
                 data.start.x *= ratio;
                 data.end.x *= ratio;
                 data.start.y *= ratio;
                 data.end.y *= ratio;
                 if (data.size != null){
-                    data.size *= ratio;
+                    data.size *= s_ratio;
                 }
                 sketchpad.drawing(data.start, data.end, data.color, data.size);
             });
