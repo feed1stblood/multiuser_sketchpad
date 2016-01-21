@@ -82,8 +82,8 @@ function Sketchpad(config) {
 
 Sketchpad.prototype._cursorPosition = function(event) {
   return {
-    x: event.pageX - $(this.canvas).offset().left,
-    y: event.pageY - $(this.canvas).offset().top,
+    x: event.offsetX,
+    y: event.offsetY,
   };
 };
 
@@ -96,6 +96,7 @@ Sketchpad.prototype._erase = function(start, end, color, size) {
 };
 
 Sketchpad.prototype._stroke = function(start, end, color, size, compositeOperation) {
+  var scale = this._width / this.element.width();
   this.context.save();
   this.context.lineJoin = 'round';
   this.context.lineCap = 'round';
@@ -103,8 +104,8 @@ Sketchpad.prototype._stroke = function(start, end, color, size, compositeOperati
   this.context.lineWidth = size;
   this.context.globalCompositeOperation = compositeOperation;
   this.context.beginPath();
-  this.context.moveTo(start.x, start.y);
-  this.context.lineTo(end.x, end.y);
+  this.context.moveTo(start.x * scale, start.y * scale);
+  this.context.lineTo(end.x * scale, end.y * scale);
   this.context.closePath();
   this.context.stroke();
 
