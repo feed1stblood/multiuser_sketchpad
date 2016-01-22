@@ -82,8 +82,9 @@ function Sketchpad(config) {
 
 Sketchpad.prototype._cursorPosition = function(event) {
   return {
-    x: event.offsetX,
-    y: event.offsetY,
+  //can use event.offsetX if only for pc web browser, but for phone, need to be written in the way below
+    x: event.pageX - $(this.canvas).offset().left,
+    y: event.pageY - $(this.canvas).offset().top,
   };
 };
 
