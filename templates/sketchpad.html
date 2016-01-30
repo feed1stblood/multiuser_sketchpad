@@ -92,14 +92,27 @@
             width: 99%;
             height: 7%;
         }
-        
-        .chatContainer {
-            height: 16%;
+
+        .bottom{
+            height: 18%;
             position: absolute;
             bottom: 0px;
-            width: 100%
+            width: 100%;
         }
-        
+
+        .binary {
+            display: inline-table;
+            width: 49%;
+            height: 100%;
+        }
+
+        .user {
+            border: 1px;
+            border-style: solid;
+            min-width: 100px;
+            min-height: 50px;
+        }
+
         #chatHistory {
             overflow-y: scroll;
             height: 80%;
@@ -125,9 +138,26 @@
                 console.log("connected");
             });
 
+            socket.on('join', function(data) {
+                data.forEach(function (user) {
+                    if ($("#" + user.id).length > 0)
+                        return;
+                    box = document.createElement("div");
+                    box.setAttribute("class", "user");
+                    box.setAttribute("id", user.id);
+                    label = document.createElement("p");
+                    label.innerText = user.allies;
+                    box.appendChild(label);
+                    $("#userContainer")[0].appendChild(box);
+                });
+            });
+
             socket.on("chat", function(data) {
-                $("#chatHistory")[0].innerText += data["message"] + "\r\n";
-                $("#chatHistory")[0].scrollTop = $("#chatHistory")[0].scrollHeight;
+                container = $("#chatHistory")[0]
+                container.innerText += data["message"] + "\r\n";
+                while (container.scrollHeight > 800)
+                    container.innerText = container.innerText.substring(container.innerText.indexOf("\n") + 1)
+                container.scrollTop = container.scrollHeight;
             })
 
             $("#textMessage").on("keydown", function(event){
@@ -225,12 +255,14 @@
         </div>
 
     </div>
-    <div class="chatContainer">
-        <p id="chatHistory">Sample Text
-            <br> Sample Text
-            <br>
-        </p>
-        <input id="textMessage" style="width: 99%" />
+    <div class="bottom">
+        <div class="chatContainer binary">
+            <p id="chatHistory">Welcome to online multi-player sketchpad.<br></p>
+            <input id="textMessage" style="width: 99%" />
+        </div>
+        <div id="userContainer" class="userPanel binary">
+
+        </div>
     </div>
 </body>
 

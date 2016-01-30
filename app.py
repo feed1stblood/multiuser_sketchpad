@@ -1,21 +1,29 @@
 # coding=utf-8
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, make_response
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, rooms
 import json
 from mafan import tradify, simplify
+from uuid import uuid4
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'feed'
 socketio = SocketIO(app)
 
-
-all_rooms = []
+all_rooms = set()
+users = {}
 
 
 @app.route("/d")
 def entrance():
-    return render_template("sketchpad.html")
+    # identify user by cookie
+    user_id = request.cookies.get("id")
+    resp = make_response(render_template("sketchpad.html"))
+    if user_id is None or user_id not in users:
+        user_id = uuid4().get_hex()
+        users[user_id] = {"id": user_id, "allies": user_id[:5]}
+        resp.set_cookie('id', user_id)
+    return resp
 
 
 @app.route("/c")
@@ -25,18 +33,30 @@ def convert():
 
 @socketio.on("connect", namespace="/draw")
 def on_connect():
-    sid = request.sid
-    join_room(sid)
-    all_rooms.append(sid)
-    print sid + "join"
+    sid = request.cookies.get("id")
+    if sid is not None:
+        join_room(sid)
+        all_rooms.add(sid)
+        # send online users list to connected user
+        emit("join", [users[u] for u in all_rooms], room=sid)
+        # broadcast user connection to all online users
+        for u in all_rooms:
+            if u == sid:
+                continue
+            emit("join", [users[sid]], room=u)
 
 
 @socketio.on("disconnect", namespace="/draw")
 def on_disconnect():
-    sid = request.sid
-    leave_room(sid)
-    all_rooms.remove(sid)
-    print sid + "leave"
+    sid = request.cookies.get("id")
+    if sid is not None:
+        leave_room(sid)
+        all_rooms.remove(sid)
+        # broadcast user disconnection to all online users
+        for u in all_rooms:
+            if u == sid:
+                continue
+            emit("join", [users[sid]], room=u)
 
 
 @socketio.on("chat", namespace="/draw")
