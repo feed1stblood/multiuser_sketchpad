@@ -19,7 +19,7 @@ to support both PC and smart phone kill a lot of my time
 ![screenshot1](docs/screenshot.png)  
 
 # Starting service
-`python app.py` will start the service, but without websocket feature  
+Basically, `python app.py` will start the service, but without websocket feature (it will use long-poll instead) 
 You can enable websocket with gunicorn:  
 `gunicorn --worker-class eventlet -w 1 -b 0.0.0.0:6676 app:app`  
-See also [flask-socketIO](https://flask-socketio.readthedocs.io/en/latest/) for more methods
+See also [flask-socketIO](https://flask-socketio.readthedocs.io/en/latest/) for more detail
