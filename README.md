@@ -9,7 +9,7 @@ Any browser that support Html5 and websocket, including android and iOS
 # Current progress
 - [x] Drawing canvas
 - [x] Synchronize canvas among multiple users
-- [x] Online chat
+- [x] Online chat (chat box is at the bottom)
 - [ ] A good layout Design for both PC and smart device
 - [ ] Game workflow control
 It has been suspended for a long time due to... my poor knowledge about html layout handling. Adjusting css
