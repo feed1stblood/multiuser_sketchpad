@@ -3,7 +3,7 @@
 from flask import Flask, request, render_template, make_response
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, rooms
 import json
-from mafan import tradify, simplify
+# from mafan import tradify, simplify
 from uuid import uuid4
 
 app = Flask(__name__)
@@ -26,9 +26,9 @@ def entrance():
     return resp
 
 
-@app.route("/c")
-def convert():
-    return simplify(request.args.get("word"))
+# @app.route("/c")
+# def convert():
+#     return simplify(request.args.get("word"))
 
 
 @socketio.on("connect", namespace="/draw")
@@ -64,7 +64,8 @@ def on_chat_message(message):
     message = json.loads(message)
     sid = request.sid[:5]
     for room in all_rooms:
-        emit("chat", {"message": sid + ": " + tradify(message["message"])}, room=room)
+        # emit("chat", {"message": sid + ": " + tradify(message["message"])}, room=room)
+        emit("chat", {"message": sid + ": " + message["message"]}, room=room)
 
 
 @socketio.on("drawing", namespace="/draw")
