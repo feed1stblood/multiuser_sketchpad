@@ -3,6 +3,9 @@ The goal of this project is to provide an online real-time cross-platform multi-
 web socket, with some additional function (conversion between simplified Chinese and traditional Chinese so
 people spoke these two similar language can play together)
 
+# Client support  
+Any browser that support Html5 and websocket, including android and iOS
+
 # Current progress
 - [x] Drawing canvas
 - [x] Synchronize canvas among multiple users
@@ -10,4 +13,7 @@ people spoke these two similar language can play together)
 - [ ] A good layout Design for both PC and smart device
 - [ ] Game workflow control
 It has been suspended for a long time due to... my poor knowledge about html layout handling. Adjusting css
-to support both PC and smart phone kill a lot of my time
+to support both PC and smart phone kill a lot of my time  
+
+# Screenshot  
+![screenshot1](docs/screenshot.png)
