@@ -16,4 +16,10 @@ It has been suspended for a long time due to... my poor knowledge about html lay
 to support both PC and smart phone kill a lot of my time  
 
 # Screenshot  
-![screenshot1](docs/screenshot.png)
+![screenshot1](docs/screenshot.png)  
+
+# Starting service
+`python app.py` will start the service, but without websocket feature  
+You can enable websocket with gunicorn:  
+`gunicorn --worker-class eventlet -w 1 -b 0.0.0.0:6676 app:app`  
+See also [flask-socketIO](https://flask-socketio.readthedocs.io/en/latest/) for more methods
