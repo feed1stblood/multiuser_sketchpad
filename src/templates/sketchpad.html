@@ -8,18 +8,17 @@
     <script src="/static/sketchpad.js"></script>
     <script src="/static/socket.io-1.4.3.js"></script>
     <script>
-        var desired = {width: 600.0, height: 300.0}
+        var desired = {width: 600.0, height: 300.0};
         var sketchpad;
         $(document).ready(function() {
-            ele = '#sketchpad'
+            ele = '#sketchpad';
             sketchpad = new Sketchpad({
                 element: ele,
                 width: $(ele).width(),
                 height: $(ele).height()
             });
             $('#color-picker').change(color);
-            $('#size-picker').change(size);
-            $('#size-picker').val(1);
+            $('#size-picker').change(size).val(1);
         });
 
         function size(event) {
@@ -47,9 +46,9 @@
             background: #FFF;
             border-radius: 2px;
             width: 100%;
-            -webkit-box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.75);
-            -moz-box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.75);
-            box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.75);
+            -webkit-box-shadow: 2px 2px 5px 0 rgba(50, 50, 50, 0.75);
+            -moz-box-shadow: 2px 2px 5px 0 rgba(50, 50, 50, 0.75);
+            box-shadow: 2px 2px 5px 0 rgba(50, 50, 50, 0.75);
             max-height: 100%;
             height: inherit;
         }
@@ -96,7 +95,7 @@
         .bottom{
             height: 18%;
             position: absolute;
-            bottom: 0px;
+            bottom: 0;
             width: 100%;
         }
 
@@ -107,8 +106,7 @@
         }
 
         .user {
-            border: 1px;
-            border-style: solid;
+            border: 1px solid;
             min-width: 100px;
             min-height: 50px;
         }
@@ -153,19 +151,19 @@
             });
 
             socket.on("chat", function(data) {
-                container = $("#chatHistory")[0]
+                container = $("#chatHistory")[0];
                 container.innerText += data["message"] + "\r\n";
                 while (container.scrollHeight > 800)
-                    container.innerText = container.innerText.substring(container.innerText.indexOf("\n") + 1)
+                    container.innerText = container.innerText.substring(container.innerText.indexOf("\n") + 1);
                 container.scrollTop = container.scrollHeight;
-            })
+            });
 
             $("#textMessage").on("keydown", function(event){
                 if (event.keyCode == 13 && event.currentTarget.value != ""){
                     socket.emit("chat", JSON_stringify({message: event.currentTarget.value}));
                     event.currentTarget.value = '';
                 }
-            })
+            });
 
             $("#sketchpad").on("drawing", function(event, data){
                 var ratio = $("#sketchpad").width() / desired.width;
@@ -178,9 +176,7 @@
                     data.size /= s_ratio;
                 }
                 socket.emit("drawing", data);
-            });
-
-            $("#sketchpad").on("drew", function(){
+            }).on("drew", function(){
                 socket.emit("drew");
             });
 
