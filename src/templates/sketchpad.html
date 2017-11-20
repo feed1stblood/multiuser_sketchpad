@@ -32,14 +32,13 @@
     <style>
         html,
         body {
-            width: 100%;
-            height: 100%;
             margin: 0;
+            height: 100%;
         }
 
         .drawingArea {
-            width: 100%;
-            height: 81%;
+            height: 35vw;
+            max-height: 80%;
         }
 
         #sketchpad {
@@ -62,23 +61,22 @@
 
         #size-picker {
             -webkit-appearance: slider-vertical;
-            width: inherit;
-            height: inherit;
+            width: 100%;
+            height: 100%;
         }
 
         .sizeContainer {
             float: left;
             display: inline-block;
-            width: 20px;
-            margin: 10px;
+            width: 4%;
             height: 90%;
             padding-top: 20px;
         }
 
         .canvasContainer {
-            width: 88%;
+            width: 90%;
             display: inline-block;
-            max-height: 100%;
+            height: 100%;
         }
         
         .palletContainer {
@@ -93,28 +91,31 @@
         }
 
         .bottom{
-            height: 18%;
+            height: 17%;
             position: absolute;
-            bottom: 0;
             width: 100%;
+            padding-top: 1%;
         }
 
         .binary {
-            display: inline-table;
+            display: inline-block;
             width: 49%;
             height: 100%;
+            vertical-align: middle;
+            padding-left: 0.5%
         }
 
         .user {
             border: 1px solid;
             min-width: 100px;
             min-height: 50px;
+            height: 100%;
         }
 
         #chatHistory {
             overflow-y: scroll;
-            height: 80%;
             margin: 1px;
+            padding-bottom: 21px;
         }
     </style>
 
@@ -254,7 +255,7 @@
     <div class="bottom">
         <div class="chatContainer binary">
             <p id="chatHistory">Welcome to online multi-player sketchpad.<br></p>
-            <input id="textMessage" style="width: 99%" />
+            <input id="textMessage" style="width: 99%; height: 21px;" />
         </div>
         <div id="userContainer" class="userPanel binary">
 
